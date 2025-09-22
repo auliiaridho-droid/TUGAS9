@@ -1,65 +1,53 @@
 <?php
-include 'koneksi.php';
+include "koneksi.php";
+$result = mysqli_query($koneksi, "SELECT * FROM buku");
 ?>
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Daftar Buku</title>
+    <title>Data Buku</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 font-sans leading-normal tracking-normal">
-
-    <div class="container mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
-        <h2 class="text-3xl font-bold mb-6 text-gray-800">Daftar Buku</h2>
-        
-        <div class="flex justify-between items-center mb-4">
-            <a href="tambah.php" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105">
-                Tambah Buku Baru
-            </a>
-        </div>
-
-        <div class="overflow-x-auto">
-            <table class="min-w-full bg-white border border-gray-200 rounded-lg">
-                <thead class="bg-gray-200">
-                    <tr>
-                        <th class="py-3 px-6 text-left text-sm font-semibold text-gray-700 uppercase">ID Buku</th>
-                        <th class="py-3 px-6 text-left text-sm font-semibold text-gray-700 uppercase">Judul</th>
-                        <th class="py-3 px-6 text-left text-sm font-semibold text-gray-700 uppercase">Stok</th>
-                        <th class="py-3 px-6 text-left text-sm font-semibold text-gray-700 uppercase">Kategori</th>
-                        <th class="py-3 px-6 text-left text-sm font-semibold text-gray-700 uppercase">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200">
-                    <?php
-                    $sql = "SELECT * FROM buku ORDER BY id_buku DESC";
-                    $result = mysqli_query($koneksi, $sql);
-
-                    if (mysqli_num_rows($result) > 0) {
-                        while($row = mysqli_fetch_assoc($result)) {
-                            echo "<tr>";
-                            echo "<td class='py-4 px-6'>" . htmlspecialchars($row['id_buku']) . "</td>";
-                            echo "<td class='py-4 px-6'>" . htmlspecialchars($row['judul']) . "</td>";
-                            echo "<td class='py-4 px-6'>" . htmlspecialchars($row['stok']) . "</td>";
-                            echo "<td class='py-4 px-6'>" . htmlspecialchars($row['kategori']) . "</td>";
-                            echo "<td class='py-4 px-6 space-x-2'>";
-                            echo "<a href='ubah.php?id=" . $row['id_buku'] . "' class='text-blue-600 hover:text-blue-800 font-semibold'>Ubah</a>";
-                            echo "<span class='text-gray-400'>|</span>";
-                            echo "<a href='hapus.php?id=" . $row['id_buku'] . "' onclick=\"return confirm('Yakin ingin menghapus data ini?')\" class='text-red-600 hover:text-red-800 font-semibold'>Hapus</a>";
-                            echo "</td>";
-                            echo "</tr>";
-                        }
-                    } else {
-                        echo "<tr><td colspan='5' class='py-4 px-6 text-center text-gray-500'>Tidak ada data buku.</td></tr>";
-                    }
-                    ?>
-                </tbody>
-            </table>
-        </div>
+<body class="bg-gradient-to-r from-blue-800 via-blue-900 to-blue-950 min-h-screen text-white">
+<div class="container mx-auto px-6 py-10">
+    <h2 class="text-4xl font-bold mb-6 text-center drop-shadow-lg">📚 Data Buku</h2>
+    
+    <div class="flex justify-end mb-4">
+        <a href="tambah.php" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg transition">+ Tambah Buku</a>
     </div>
+
+    <div class="overflow-x-auto shadow-xl rounded-lg">
+        <table class="min-w-full text-center bg-white text-gray-800 rounded-lg">
+            <thead class="bg-blue-700 text-white">
+                <tr>
+                    <th class="px-6 py-3">ID</th>
+                    <th class="px-6 py-3">Judul Buku</th>
+                    <th class="px-6 py-3">Stok</th>
+                    <th class="px-6 py-3">Kategori</th>
+                    <th class="px-6 py-3">Penerbit</th>
+                    <th class="px-6 py-3">Tahun Terbit</th>
+                    <th class="px-6 py-3">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php while($row = mysqli_fetch_assoc($result)) { ?>
+                <tr class="border-b hover:bg-blue-100">
+                    <td class="px-6 py-3"><?= $row['id_buku']; ?></td>
+                    <td class="px-6 py-3"><?= $row['judul']; ?></td>
+                    <td class="px-6 py-3"><?= $row['stok']; ?></td>
+                    <td class="px-6 py-3"><?= $row['kategori']; ?></td>
+                    <td class="px-6 py-3"><?= $row['penerbit']; ?></td>
+                    <td class="px-6 py-3"><?= $row['tahun_terbit']; ?></td>
+                    <td class="px-6 py-3">
+                        <a href="ubah.php?id=<?= $row['id_buku']; ?>" class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2">✏ Edit</a>
+                        <a href="hapus.php?id=<?= $row['id_buku']; ?>" onclick="return confirm('Yakin hapus data?')" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md">🗑 Hapus</a>
+                    </td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+    </div>
+</div>
 </body>
 </html>
-<?php
-mysqli_close($koneksi);
-?>
